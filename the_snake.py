@@ -53,7 +53,9 @@ class GameOject:
 
 
 class Apple(GameOject):
-    """Класс, унаследованный от GameObject, описывающий яблоко и действия с ним."""
+    """
+    Класс, унаследованный от GameObject, описывающий яблоко и действия с ним.
+    """
     # Задание цвета и установка случайного положения яблока.
     def __init__(self):
         super().__init__()
@@ -73,7 +75,9 @@ class Apple(GameOject):
 
 
 class Snake(GameOject):
-    """Класс, унаследованный от GameObject, описывающий змейку и её поведение."""
+    """
+    Класс, унаследованный от GameObject, описывающий змейку и её поведение.
+    """
     # Начальное состояние змейки.
     def __init__(self):
         super().__init__()
@@ -91,14 +95,21 @@ class Snake(GameOject):
     
     def move(self):
         """Метод для обновления позиции змейки."""
+        # Получаем текущее положение головы.
         old_head_x, old_head_y = self.get_head_position()
-        new_head_x = (old_head_x + self.direction[0] * GRID_SIZE) % SCREEN_WIDTH
-        new_head_y = (old_head_y + self.direction[1] * GRID_SIZE) % SCREEN_HEIGHT
+        # Получаем новую позицию головы.
+        new_head_x = (
+            old_head_x + self.direction[0] * GRID_SIZE
+        ) % SCREEN_WIDTH  # Обработка x-края.
+        new_head_y = (
+            old_head_y + self.direction[1] * GRID_SIZE
+        ) % SCREEN_HEIGHT  # Обработка y-края.
         new_head = (new_head_x, new_head_y)
-        self.position.insert(0, new_head)  # Добавление новой секции в начало.
+        # Добавляем новую голову в начало.
+        self.position.insert(0, new_head)
+        # Удаляем хвост, если текущая длина превышает максимальное значение
         if len(self.position) > self.length:
-            self.position.pop()  # Удаление последней секции.
-        
+            self.position.pop()
         
     def draw(self):
         """Метод для отрисовки змейки на игровой поверхности."""
