@@ -67,8 +67,8 @@ class Apple(GameOject):
 
     def randomize_position(self):
         """Метод для установки случайного положения яблоку."""
-        width = randint(0, SCREEN_WIDTH - GRID_SIZE)
-        height = randint(0, SCREEN_HEIGHT - GRID_SIZE)
+        width = randint(0, GRID_WIDTH - 1) * GRID_SIZE
+        height = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
         self.position = (width, height)
 
 
@@ -79,6 +79,7 @@ class Snake(GameOject):
         super().__init__()
         self.position = [(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)]
         self.length = 1
+        self.direction = (1, 0)  # По умолчанию змейка движется вправо
         self.next_direction = None
         self.body_color = SNAKE_COLOR
 
@@ -88,10 +89,16 @@ class Snake(GameOject):
             self.direction = self.next_direction
             self.next_direction = None
     
-    def move(self, new_section):
+    def move(self):
         """Метод для обновления позиции змейки."""
-        self.position.pop() # Удаление последней секции.
-        self.position.insert(0, new_section) # Добавление новой секции в начало.
+        old_head_x, old_head_y = self.get_head_position()
+        new_head_x = (old_head_x + self.direction[0] * GRID_SIZE) % SCREEN_WIDTH
+        new_head_y = (old_head_y + self.direction[1] * GRID_SIZE) % SCREEN_HEIGHT
+        new_head = (new_head_x, new_head_y)
+        self.position.insert(0, new_head)  # Добавление новой секции в начало.
+        if len(self.position) > self.length:
+            self.position.pop()  # Удаление последней секции.
+        
         
     def draw(self):
         """Метод для отрисовки змейки на игровой поверхности."""
