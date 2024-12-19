@@ -59,11 +59,17 @@ class Apple(GameOject):
         super().__init__()
         self.body_color = APPLE_COLOR
 
-    # Отрисовка яблока на игровой поверхности.
     def draw(self):
+        """Метод для отрисовки яблока на игровой поверхности."""
         rect = pygame.Rect(self.position, (GRID_SIZE, GRID_SIZE))
         pygame.draw.rect(screen, self.body_color, rect)
         pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
+
+    def randomize_position(self):
+        """Метод для установки случайного положения яблоку."""
+        width = randint(0, SCREEN_WIDTH - GRID_SIZE)
+        height = randint(0, SCREEN_HEIGHT - GRID_SIZE)
+        self.position = (width, height)
 
 
 class Snake(GameOject):
@@ -97,6 +103,7 @@ def main():
     while True:
         clock.tick(SPEED)
         handle_keys(apple)
+        apple.randomize_position()
         apple.draw()
         pygame.display.update()
 
