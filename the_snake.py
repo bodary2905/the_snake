@@ -124,7 +124,16 @@ class Snake(GameOject):
     
     def reset(self):
         """Метод, сбрасывающий змейку в начальное состояние"""
+        # Сбрасываем длину змейки.
+        self.length = 1
+        # Сбрасываем позицию змейки.
         self.position = [(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)]
+        # Изменяем напрвление движения случайным образом
+        x_right = (1, 0)
+        x_left = (-1, 0)
+        y_right = (0, 1)
+        y_left = (0, -1)
+        self.direction = choice[x_right, x_left, y_right, y_left]
 
 
 def handle_keys(game_object):
