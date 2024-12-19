@@ -40,17 +40,65 @@ clock = pygame.time.Clock()
 
 
 # Тут опишите все классы игры.
-...
+class GameOject:
+    """Базовый класс, от которого наследуются другие игровые объекты."""
+    # Инициализация позиции и цвета объекта на игровом поле.
+    def __init__(self):
+        self.position = ((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))
+        self.body_color = None
+
+    # Абстрактный метод, который будут переопределен в дочерних классах.
+    def draw(self):
+        pass
+
+
+class Apple(GameOject):
+    """Класс, унаследованный от GameObject, описывающий яблоко и действия с ним."""
+    # Задание цвета и установка случайного положения яблока.
+    def __init__(self):
+        super().__init__()
+        self.body_color = APPLE_COLOR
+
+    # Отрисовка яблока на игровой поверхности.
+    def draw(self):
+        rect = pygame.Rect(self.position, (GRID_SIZE, GRID_SIZE))
+        pygame.draw.rect(screen, self.body_color, rect)
+        pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
+
+
+class Snake(GameOject):
+    """Класс, унаследованный от GameObject, описывающий змейку и её поведение."""
+    pass
+
+
+def handle_keys(game_object):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            raise SystemExit
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP and game_object.direction != DOWN:
+                game_object.next_direction = UP
+            elif event.key == pygame.K_DOWN and game_object.direction != UP:
+                game_object.next_direction = DOWN
+            elif event.key == pygame.K_LEFT and game_object.direction != RIGHT:
+                game_object.next_direction = LEFT
+            elif event.key == pygame.K_RIGHT and game_object.direction != LEFT:
+                game_object.next_direction = RIGHT
 
 
 def main():
+    """Основной цикл игры."""
     # Инициализация PyGame:
     pygame.init()
     # Тут нужно создать экземпляры классов.
-    ...
+    apple = Apple()
 
-    # while True:
-    #     clock.tick(SPEED)
+    while True:
+        clock.tick(SPEED)
+        handle_keys(apple)
+        apple.draw()
+        pygame.display.update()
 
         # Тут опишите основную логику игры.
         # ...
