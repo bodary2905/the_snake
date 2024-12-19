@@ -74,7 +74,39 @@ class Apple(GameOject):
 
 class Snake(GameOject):
     """Класс, унаследованный от GameObject, описывающий змейку и её поведение."""
-    pass
+    # Начальное состояние змейки.
+    def __init__(self):
+        super().__init__()
+        self.position = [(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)]
+        self.length = 1
+        self.next_direction = None
+        self.body_color = SNAKE_COLOR
+
+    def update_direction(self):
+        """Метод для обновления направления движения змейки"""
+        if self.next_direction:
+            self.direction = self.next_direction
+            self.next_direction = None
+    
+    def move(self, new_section):
+        """Метод для обновления позиции змейки."""
+        self.position.pop() # Удаление последней секции.
+        self.position.insert(0, new_section) # Добавление новой секции в начало.
+        
+    def draw(self):
+        """Метод для отрисовки змейки на игровой поверхности."""
+        for position in self.positions[:-1]:
+            rect = (pygame.Rect(position, (GRID_SIZE, GRID_SIZE)))
+            pygame.draw.rect(screen, self.body_color, rect)
+            pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
+    
+    def get_head_position(self):
+        """Метод, возвращающий позицию головы змейки"""
+        return self.position[0]
+    
+    def reset(self):
+        """Метод, сбрасывающий змейку в начальное состояние"""
+        self.position = [(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)]
 
 
 def handle_keys(game_object):
