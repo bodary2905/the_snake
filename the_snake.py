@@ -83,16 +83,17 @@ class Snake(GameOject):
         super().__init__()
         self.position = [(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)]
         self.length = 1
-        self.direction = (1, 0)  # По умолчанию змейка движется вправо
+        self.direction = RIGHT  # По умолчанию змейка движется вправо
         self.next_direction = None
         self.body_color = SNAKE_COLOR
+        self.last = None
 
     def update_direction(self):
         """Метод для обновления направления движения змейки"""
         if self.next_direction:
             self.direction = self.next_direction
             self.next_direction = None
-    
+
     def move(self):
         """Метод для обновления позиции змейки."""
         # Получаем текущее положение головы.
@@ -109,19 +110,29 @@ class Snake(GameOject):
         self.position.insert(0, new_head)
         # Удаляем хвост, если текущая длина превышает максимальное значение
         if len(self.position) > self.length:
-            self.position.pop()
-        
+            self.last = self.position.pop()
+
     def draw(self):
         """Метод для отрисовки змейки на игровой поверхности."""
         for position in self.positions[:-1]:
             rect = (pygame.Rect(position, (GRID_SIZE, GRID_SIZE)))
             pygame.draw.rect(screen, self.body_color, rect)
             pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
-    
+
+        # Отрисовка головы змейки
+        head_rect = pygame.Rect(self.positions[0], (GRID_SIZE, GRID_SIZE))
+        pygame.draw.rect(screen, self.body_color, head_rect)
+        pygame.draw.rect(screen, BORDER_COLOR, head_rect, 1)
+
+        # Затирание последнего сегмента
+        if self.last:
+            last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
+            pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
+
     def get_head_position(self):
         """Метод, возвращающий позицию головы змейки"""
         return self.position[0]
-    
+
     def reset(self):
         """Метод, сбрасывающий змейку в начальное состояние"""
         # Сбрасываем длину змейки.
@@ -129,14 +140,11 @@ class Snake(GameOject):
         # Сбрасываем позицию змейки.
         self.position = [(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)]
         # Изменяем напрвление движения случайным образом
-        x_right = (1, 0)
-        x_left = (-1, 0)
-        y_right = (0, 1)
-        y_left = (0, -1)
-        self.direction = choice[x_right, x_left, y_right, y_left]
+        self.direction = choice[RIGHT, LEFT, UP, DOWN]
 
 
 def handle_keys(game_object):
+    """Функция для обработки действий пользователя"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -158,16 +166,19 @@ def main():
     pygame.init()
     # Тут нужно создать экземпляры классов.
     apple = Apple()
+    snake = Snake()
 
     while True:
-        clock.tick(SPEED)
-        handle_keys(apple)
-        apple.randomize_position()
-        apple.draw()
-        pygame.display.update()
+        # clock.tick(SPEED)
+        # handle_keys(apple)
+        # apple.randomize_position()
+        # apple.draw()
+        # pygame.display.update()
 
-        # Тут опишите основную логику игры.
-        # ...
+        clock.tick(SPEED)
+        handle_keys(snake)
+        snake.update_direction()
+        snake.move()
 
 
 if __name__ == '__main__':
