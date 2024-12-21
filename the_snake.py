@@ -81,7 +81,7 @@ class Snake(GameOject):
     # Начальное состояние змейки.
     def __init__(self):
         super().__init__()
-        self.position = [(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)]
+        self.positions = [self.position]
         self.length = 1
         self.direction = RIGHT  # По умолчанию змейка движется вправо
         self.next_direction = None
@@ -107,13 +107,14 @@ class Snake(GameOject):
         ) % SCREEN_HEIGHT  # Обработка y-края.
         new_head = (new_head_x, new_head_y)
         # Добавляем новую голову в начало.
-        self.position.insert(0, new_head)
+        self.positions.insert(0, new_head)
         # Удаляем хвост, если текущая длина превышает максимальное значение
-        if len(self.position) > self.length:
-            self.last = self.position.pop()
+        if len(self.positions) > self.length:
+            self.last = self.positions.pop()
 
     def draw(self):
         """Метод для отрисовки змейки на игровой поверхности."""
+        pos = self.positions
         for position in self.positions[:-1]:
             rect = (pygame.Rect(position, (GRID_SIZE, GRID_SIZE)))
             pygame.draw.rect(screen, self.body_color, rect)
@@ -131,7 +132,7 @@ class Snake(GameOject):
 
     def get_head_position(self):
         """Метод, возвращающий позицию головы змейки"""
-        return self.position[0]
+        return self.positions[0]
 
     def reset(self):
         """Метод, сбрасывающий змейку в начальное состояние"""
@@ -164,11 +165,12 @@ def main():
     """Основной цикл игры."""
     # Инициализация PyGame:
     pygame.init()
-    # Тут нужно создать экземпляры классов.
+    # Создание экземпляров класса.
     apple = Apple()
     snake = Snake()
 
     while True:
+        # Делаем паузу, чтобы увидеть изменения.
         # clock.tick(SPEED)
         # handle_keys(apple)
         # apple.randomize_position()
@@ -179,6 +181,8 @@ def main():
         handle_keys(snake)
         snake.update_direction()
         snake.move()
+        snake.draw()
+        pygame.display.update()
 
 
 if __name__ == '__main__':
