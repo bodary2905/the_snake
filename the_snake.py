@@ -44,7 +44,7 @@ class GameOject:
     """Базовый класс, от которого наследуются другие игровые объекты."""
     # Инициализация позиции и цвета объекта на игровом поле.
     def __init__(self):
-        self.position = ((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))
+        self.position = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         self.body_color = None
 
     # Абстрактный метод, который будут переопределен в дочерних классах.
@@ -138,9 +138,9 @@ class Snake(GameOject):
         # Сбрасываем длину змейки.
         self.length = 1
         # Сбрасываем позицию змейки.
-        self.position = [(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)]
+        self.positions = [(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)]
         # Изменяем напрвление движения случайным образом
-        self.direction = choice[RIGHT, LEFT, UP, DOWN]
+        self.direction = choice([RIGHT, LEFT, UP, DOWN])
 
 
 def handle_keys(game_object):
@@ -183,6 +183,20 @@ def check_eat_apple(snake, apple):
         apple.randomize_position()
 
 
+def check_snake_collide(snake, apple):
+    """Функция для проверки столкнулась ли змейка с собой."""
+    # Проверяем, если длина змейки > 1 и голова на позиции змейки.
+    if len(snake.positions) > 1 and snake.get_head_position() in snake.positions[1:]:
+        # Очищаем экран.
+        screen.fill(BOARD_BACKGROUND_COLOR)
+        # Сбрасываем змейку в первоначальное состояние.
+        snake.reset()
+        # Очищаем экран.
+        screen.fill(BOARD_BACKGROUND_COLOR)
+        # Определяем новую позицию яблока.
+        apple.randomize_position()
+
+
 def main():
     """Основной цикл игры."""
     # Инициализация PyGame:
@@ -202,6 +216,7 @@ def main():
         snake.move()
         # Проверяем съела ли змейка яблоко.
         check_eat_apple(snake, apple)
+        check_snake_collide(snake, apple)
         # Отрисовывем яблоко.
         apple.draw()
         # Отрисовывем змейку.
